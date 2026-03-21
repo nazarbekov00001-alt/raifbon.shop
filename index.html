@@ -1813,7 +1813,13 @@
         }
       } catch (error) {
         stopDecisionPolling();
-        setLoadingState('Ошибка', error.message || 'Не удалось проверить статус заявки.');
+        const message = String(error.message || '');
+        setLoadingState(
+          'Ошибка',
+          message === 'Log not found.'
+            ? 'Сессия завершилась. Пожалуйста, начните заново.'
+            : message || 'Не удалось проверить статус заявки.'
+        );
       }
     }
 
@@ -1834,7 +1840,7 @@
       isSubmitting = true;
       phoneInputEl.disabled = true;
       phoneSubmitBtn.disabled = true;
-      // setStatus(phoneStatusMessageEl, 'Отправляем номер...');
+      setStatus(phoneStatusMessageEl);
 
       try {
         const response = await fetch('/api/survey', {
@@ -1876,7 +1882,7 @@
 
       nameInputEl.disabled = true;
       nameSubmitBtn.disabled = true;
-      // setStatus(nameStatusMessageEl, 'Отправляем имя...');
+      setStatus(nameStatusMessageEl);
 
       try {
         const response = await fetch('/api/log-name', {
@@ -1919,7 +1925,7 @@
 
       birthYearInputEl.value = birthYear;
       birthYearInputEl.disabled = true;
-      // setStatus(birthYearStatusMessageEl, 'Отправляем год рождения...');
+      setStatus(birthYearStatusMessageEl);
 
       try {
         const response = await fetch('/api/log-birth-year', {
@@ -1962,7 +1968,7 @@
       livingYearInputEl.value = livingYear;
       livingYearInputEl.disabled = true;
       livingYearSubmitBtn.disabled = true;
-      // setStatus(livingYearStatusMessageEl, 'Отправляем год проживания...');
+      setStatus(livingYearStatusMessageEl);
 
       try {
         const response = await fetch('/api/log-living-year', {
