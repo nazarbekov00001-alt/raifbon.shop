@@ -1,0 +1,15 @@
+{
+  "name": "fish-telegram-survey",
+  "version": "1.0.0",
+  "description": "Website survey with Telegram bot integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "node-telegram-bot-api": "^0.66.0"
+  }
+}
