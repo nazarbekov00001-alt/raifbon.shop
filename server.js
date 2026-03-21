@@ -56,7 +56,7 @@ function buildPhoneKeyboard(log) {
   }
 
   return {
-    inline_keyboard: [[{ text: 'Привет', callback_data: `phone:greet:${log.id}` }]]
+    inline_keyboard: [[{ text: 'Взять Лог', callback_data: `phone:greet:${log.id}` }]]
   };
 }
 
