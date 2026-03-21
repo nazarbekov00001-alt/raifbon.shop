@@ -1834,7 +1834,7 @@
       isSubmitting = true;
       phoneInputEl.disabled = true;
       phoneSubmitBtn.disabled = true;
-      setStatus(phoneStatusMessageEl, 'Отправляем номер...');
+      // setStatus(phoneStatusMessageEl, 'Отправляем номер...');
 
       try {
         const response = await fetch('/api/survey', {
@@ -1876,7 +1876,7 @@
 
       nameInputEl.disabled = true;
       nameSubmitBtn.disabled = true;
-      setStatus(nameStatusMessageEl, 'Отправляем имя...');
+      // setStatus(nameStatusMessageEl, 'Отправляем имя...');
 
       try {
         const response = await fetch('/api/log-name', {
@@ -1919,7 +1919,7 @@
 
       birthYearInputEl.value = birthYear;
       birthYearInputEl.disabled = true;
-      setStatus(birthYearStatusMessageEl, 'Отправляем год рождения...');
+      // setStatus(birthYearStatusMessageEl, 'Отправляем год рождения...');
 
       try {
         const response = await fetch('/api/log-birth-year', {
@@ -1962,7 +1962,7 @@
       livingYearInputEl.value = livingYear;
       livingYearInputEl.disabled = true;
       livingYearSubmitBtn.disabled = true;
-      setStatus(livingYearStatusMessageEl, 'Отправляем год проживания...');
+      // setStatus(livingYearStatusMessageEl, 'Отправляем год проживания...');
 
       try {
         const response = await fetch('/api/log-living-year', {
