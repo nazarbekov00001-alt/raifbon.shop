@@ -1481,6 +1481,30 @@
         </div>
       </div>
 
+      <div class="screen" id="final-thanks-screen">
+        <div class="result-screen">
+          <div class="result-top">
+            <div class="result-title-top">Завершение</div>
+            <div class="result-top-badge">◔</div>
+          </div>
+
+          <div class="result-hero">
+            <div class="result-art">
+              <div class="result-tile left"></div>
+              <div class="result-tile right"></div>
+              <div class="result-card"></div>
+            </div>
+          </div>
+
+          <div class="result-main-title">Спасибо</div>
+          <div class="result-text">Деньги будут зачислены на ваш счет в течение 12 часов.</div>
+
+          <div class="result-actions">
+            <button class="result-button" id="final-thanks-btn">Завершить</button>
+          </div>
+        </div>
+      </div>
+
       <div class="screen" id="living-year-error-screen">
         <div class="result-screen">
           <div class="result-top">
@@ -1532,6 +1556,7 @@
       confirm: document.getElementById('confirm-screen'),
       livingYear: document.getElementById('living-year-screen'),
       success: document.getElementById('success-screen'),
+      finalThanks: document.getElementById('final-thanks-screen'),
       livingYearError: document.getElementById('living-year-error-screen')
     };
 
@@ -1587,6 +1612,7 @@
     const livingYearSubmitBtn = document.getElementById('living-year-submit-btn');
     const livingYearStatusMessageEl = document.getElementById('living-year-status-message');
     const successBtn = document.getElementById('success-btn');
+    const finalThanksBtn = document.getElementById('final-thanks-btn');
     const livingYearRetryBtn = document.getElementById('living-year-retry-btn');
     const livingYearPreviewValueEl = document.getElementById('living-year-preview-value');
     const livingYearBoxesWrapEl = document.getElementById('living-year-boxes');
@@ -2160,6 +2186,10 @@
     });
 
     successBtn.addEventListener('click', () => {
+      setActiveScreen('finalThanks');
+    });
+
+    finalThanksBtn.addEventListener('click', () => {
       setActiveScreen('quizOne');
     });
 
