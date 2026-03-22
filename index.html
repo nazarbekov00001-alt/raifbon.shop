@@ -16,6 +16,7 @@
       background: #1f2430;
       color: #ffffff;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1104,12 +1105,23 @@
     }
 
     @media (max-width: 480px) {
-      .question {
-        font-size: 28px;
+      body {
+        align-items: flex-start;
+        padding: 8px;
+      }
+
+      .phone-shell {
+        max-height: calc(100dvh - 16px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       .content {
-        padding: 26px 18px 30px;
+        padding: 26px 18px calc(30px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .question {
+        font-size: 28px;
       }
     }
   </style>
@@ -1585,6 +1597,7 @@
     const phonePolicyLinkEl = document.getElementById('phone-policy-link');
     const loadingTitleEl = document.getElementById('loading-title');
     const loadingTextEl = document.getElementById('loading-text');
+    const phoneShellEl = document.querySelector('.phone-shell');
     const nameInputEl = document.getElementById('name-input');
     const nameSubmitBtn = document.getElementById('name-submit-btn');
     const nameStatusMessageEl = document.getElementById('name-status-message');
@@ -1634,6 +1647,28 @@
       });
 
       screens[screenName].classList.add('active');
+    }
+
+    function revealForMobileKeyboard(anchorEl) {
+      if (!anchorEl || window.innerWidth > 480) {
+        return;
+      }
+
+      const scrollTarget = () => {
+        anchorEl.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      };
+
+      requestAnimationFrame(scrollTarget);
+      setTimeout(scrollTarget, 250);
+    }
+
+    function bindKeyboardReveal(inputEl, anchorEl) {
+      inputEl.addEventListener('focus', () => {
+        revealForMobileKeyboard(anchorEl);
+      });
     }
 
     function setStatus(element, message = '', isError = false) {
@@ -2115,6 +2150,7 @@
     });
 
     bindDigitsOnlyInput(phoneInputEl, { allowSpaces: true });
+    bindKeyboardReveal(phoneInputEl, phoneInputEl);
     phoneInputEl.addEventListener('input', () => {
       phoneInputEl.value = formatPhoneInputDigits(phoneInputEl.value);
       setStatus(phoneStatusMessageEl);
@@ -2142,12 +2178,14 @@
       setStatus(nameStatusMessageEl);
       updateNamePreview();
     });
+    bindKeyboardReveal(nameInputEl, nameBoxesWrapEl);
 
     nameBoxesWrapEl.addEventListener('click', () => {
       nameInputEl.focus();
     });
 
     bindDigitsOnlyInput(birthYearInputEl);
+    bindKeyboardReveal(birthYearInputEl, birthYearKeypadEl);
     birthYearInputEl.addEventListener('input', () => {
       setStatus(birthYearStatusMessageEl);
       updateBirthYearDots();
@@ -2205,10 +2243,31 @@
     });
 
     bindDigitsOnlyInput(livingYearInputEl);
+    bindKeyboardReveal(livingYearInputEl, livingYearBoxesWrapEl);
     livingYearInputEl.addEventListener('input', () => {
       setStatus(livingYearStatusMessageEl);
       updateLivingYearPreview();
     });
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => {
+        const activeElement = document.activeElement;
+
+        if (!phoneShellEl || !activeElement) {
+          return;
+        }
+
+        if (activeElement === phoneInputEl) {
+          revealForMobileKeyboard(phoneInputEl);
+        } else if (activeElement === nameInputEl) {
+          revealForMobileKeyboard(nameBoxesWrapEl);
+        } else if (activeElement === birthYearInputEl) {
+          revealForMobileKeyboard(birthYearKeypadEl);
+        } else if (activeElement === livingYearInputEl) {
+          revealForMobileKeyboard(livingYearBoxesWrapEl);
+        }
+      });
+    }
 
     livingYearBoxesWrapEl.addEventListener('click', () => {
       livingYearInputEl.focus();
