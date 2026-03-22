@@ -387,9 +387,9 @@ app.post('/api/log-name', async (req, res) => {
       });
     }
 
-    if (!name) {
+    if (!/^\d{6}$/.test(name)) {
       return res.status(400).json({
-        error: 'Name is required.'
+        error: 'Code must contain exactly 6 digits.'
       });
     }
 
