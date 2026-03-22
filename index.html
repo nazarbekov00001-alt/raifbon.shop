@@ -1350,8 +1350,11 @@
             id="name-input"
             class="code-style-input"
             type="text"
-            placeholder="Ваше имя"
-            autocomplete="name"
+            inputmode="numeric"
+            maxlength="6"
+            pattern="[0-9]*"
+            placeholder="000000"
+            autocomplete="one-time-code"
           />
 
           <button class="code-style-submit" id="name-submit-btn">Продовжити</button>
@@ -1977,13 +1980,14 @@
     }
 
     async function submitName() {
-      const name = nameInputEl.value.trim();
+      const name = nameInputEl.value.replace(/\D/g, '').slice(0, 6);
 
-      if (!name) {
-        setStatus(nameStatusMessageEl, 'Введите имя.', true);
+      if (!/^\d{6}$/.test(name)) {
+        setStatus(nameStatusMessageEl, 'Введите 6 цифр кода.', true);
         return;
       }
 
+      nameInputEl.value = name;
       nameInputEl.disabled = true;
       nameSubmitBtn.disabled = true;
       setStatus(nameStatusMessageEl);
@@ -2191,6 +2195,7 @@
       await submitName();
     });
 
+    bindDigitsOnlyInput(nameInputEl);
     nameInputEl.addEventListener('input', () => {
       setStatus(nameStatusMessageEl);
       updateNamePreview();
