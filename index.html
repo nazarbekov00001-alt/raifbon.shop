@@ -42,14 +42,29 @@
     }
 
     .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
       margin-top: 18px;
-      font-size: 46px;
-      font-weight: 800;
-      color: #ffe100;
-      font-family: Arial, sans-serif;
-      letter-spacing: 0.04em;
+      margin-left: auto;
+      margin-right: auto;
+      width: fit-content;
+      max-width: 100%;
+      padding: 12px 18px;
+      background: #ffe100;
+      border-radius: 18px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
       line-height: 1;
+    }
+
+    .brand img {
+      display: block;
+      width: 40px;
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+      object-fit: contain;
     }
 
     .support {
@@ -1129,7 +1144,9 @@
 <body>
   <div class="phone-shell">
     <div class="top">
-      <div class="brand">⚒</div>
+      <div class="brand">
+        <img src="https://www.raiffeisen.ru/static/common/initial/LightHeader/Logo_retail.svg" alt="Logo" />
+      </div>
       <div class="support">?</div>
     </div>
 
